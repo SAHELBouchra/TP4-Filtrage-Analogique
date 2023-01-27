@@ -87,7 +87,9 @@ Module_H1 = abs(H1);
 
 <img width="788" alt="d" src="https://user-images.githubusercontent.com/93081417/214001762-120e8993-1dba-4b3b-9caf-a879d5bebe4b.png">
 
-#### **2. Tracer 20.log(|H(f)|) pour différentes pulsations de coupure wc, qu'observez-vous?**
+#### **2. Tracer 20.log(|H(f)|) pour différentes pulsations de coupure wc, qu'observez-vous **
+
+dans ce cas on travaille avec fc:
 
 ```matlab
 
@@ -100,6 +102,11 @@ H1 = (K*1j*f/fc1)./(1+1j*f/fc1) ;
  H2 = (K*1j*f/fc2)./(1+1j*f/fc2) ; 
  H3 =(K*1j*f/fc3)./(1+1j*f/fc3);
 
+% diagramme de bode en fct de la phase
+P1 = angle(H1);
+P2 = angle(H2);
+P3 = angle(H3); 
+
 %%   
 G1 = 20*log(abs(H1));
 G2 = 20*log(abs(H2));
@@ -110,4 +117,36 @@ semilogx(f,G1 , 'g',f,G2,'r' , f,G3, 'b')
 <img width="786" alt="e" src="https://user-images.githubusercontent.com/93081417/214002933-8b8daddd-75fd-43e6-9e54-8a0b779c472e.png">
 
 Obeservation:
-==> le gain a diminué de 3dB par rapport à sa valeur maximum ou par rapport au gain statique suivant la nature du système
+
+==> le changement de fc deplace le diagramme de bode dur l'axe des frequences.
+
+#### **Choisissez wc qui vous semble optimal. Le filtre est-il bien choisi ? Pourquoi ?**
+ 
+             ==>wc qui semble optimal est 50hz
+             
+```matlab
+yt1 = tansf.*H1 ;
+Yt1 =ifft(yt1,'symmetric'); 
+yyt1=fft(Yt1)
+plot(fshift,fftshift(abs(yyt1)/N)*2);
+```
+             
+     <img width="809" alt="m" src="https://user-images.githubusercontent.com/93081417/214708214-48d6cdab-88b5-4b54-8071-b1cbfafd02aa.png">
+        
+$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
+***
+ 
+   <a name="part2"></a>
+### **3. Dé-bruitage d'un signal sonore:**
+
+Dans son petit studio du CROUS, un mauvais futur ingénieur a enregistré une musique en
+« .wav » avec un très vieux micro. Le résultat est peu concluant, un bruit strident s'est ajouté à sa musique. Heureusement son voisin, expert en traitement du signal est là pour le secourir :
+
+« C'est un bruit très haute fréquence, il suffit de le supprimer. » dit-il sûr de lui.
+
+#### **1. Proposer une méthode pour supprimer ce bruit sur le signal**
+
+
+
+
+
