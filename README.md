@@ -72,7 +72,7 @@ La fonction H(f) (transmittance complexe) du filtre passe haut de premier ordre 
 
 Avec K le gain du signal, w la pulsation et wc la pulsation de coupure. On se propose de tracer le diagramme de Bode de ce filtre et de l'appliquer au signal.
 
-#### **1. Tracer le module de la fonction H(f) avec K=1 et wc = 50 rad/s.**
+#### **3. Tracer le module de la fonction H(f) avec K=1 et wc = 50 rad/s.**
 
 ```matlab
 K = 1 ;
@@ -87,7 +87,7 @@ Module_H1 = abs(H1);
 
 <img width="788" alt="d" src="https://user-images.githubusercontent.com/93081417/214001762-120e8993-1dba-4b3b-9caf-a879d5bebe4b.png">
 
-#### **2. Tracer 20.log(|H(f)|) pour différentes pulsations de coupure wc, qu'observez-vous **
+#### **4. Tracer 20.log(|H(f)|) pour différentes pulsations de coupure wc, qu'observez-vous **
 
 dans ce cas on travaille avec fc:
 
@@ -118,23 +118,30 @@ semilogx(f,G1 , 'g',f,G2,'r' , f,G3, 'b')
 
 Obeservation:
 
-==> le changement de fc deplace le diagramme de bode dur l'axe des frequences.
+==> Plus la pulsation de coupure est petite, plus le filtre est passe haut et la transmittance sera plus élevée pour les fréquences élevées.
 
 #### **Choisissez wc qui vous semble optimal. Le filtre est-il bien choisi ? Pourquoi ?**
  
-             ==>wc qui semble optimal est 50hz
+             ==>fc qui semble optimal est 1000hz
              
 ```matlab
-yt1 = tansf.*H1 ;
+yt1 = y.*H1 ;
 Yt1 =ifft(yt1,'symmetric'); 
 yyt1=fft(Yt1)
-plot(fshift,fftshift(abs(yyt1)/N)*2);
+plot(fshift,fftshift(abs(yyt1)/N)*2
 ```
-             
-     <img width="809" alt="m" src="https://user-images.githubusercontent.com/93081417/214708214-48d6cdab-88b5-4b54-8071-b1cbfafd02aa.png">
+ <img width="782" alt="po" src="https://user-images.githubusercontent.com/93081417/215321272-a174c492-7a55-44ef-8001-2a5e0f748c43.png">
+
+
+#### **Observez le signal y(t) obtenu, puis Comparer-le avec le signal que vous auriez souhaité obtenir. Conclusions ?**
+
+    ==>Un filtre passe-haut ne peut pas supprimer complètement toutes les informations indésirables car il ne peut sélectionner qu'une plage de fréquences           élevées.
         
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
+
+
+
  
    <a name="part2"></a>
 ### **3. Dé-bruitage d'un signal sonore:**
@@ -146,7 +153,94 @@ Dans son petit studio du CROUS, un mauvais futur ingénieur a enregistré une mu
 
 #### **1. Proposer une méthode pour supprimer ce bruit sur le signal**
 
+```matlab
+clear all
+close all
+clc
 
+[music, fs] = audioread('test.wav');
+sound(music,fs);
+music = music';
+N=length(music);
+te = 1/fs;
+t = (0:N-1)*te;
+N = length(music);
+
+f = (0:N-1)*(fs/N);
+fshift = (-N/2:N/2-1)*(fs/N);
+
+spectre_music = fft(music);
+subplot(2,1,1)
+plot(t, music)
+ title('le signal de musique :');
+subplot(2,1,2)
+plot(fshift,fftshift(abs(spectre_music)));
+title('le spectre de musique:');
+
+```
+<img width="808" alt="io" src="https://user-images.githubusercontent.com/93081417/215321795-f40b30ec-c5c3-4a5c-9c50-d273bf90f165.png">
+
+
+#### **2. Mettez-la en oeuvre. Quelle influence à le paramètre K du filtre que vous avez utilisé ?**
+##### ~Pour K = 1:
+
+```matlab
+k = 1;
+fc = 4500;
+%la transmitance complexe 
+h = k./(1+1j*(f/fc));
+
+h_filter = [h(1:floor(N/2)), flip(h(1:floor(N/2)))];
+y_filtr = spectre_music(1:end-1).*h_filter;
+sig_filtred= ifft(y_filtr,"symmetric");
+semilogx(f(1:floor(N/2)),abs( h(1:floor(N/2))),'linewidth',1.5)
+title('le gain :');
+```
+<img width="376" alt="lp" src="https://user-images.githubusercontent.com/93081417/215321961-c5cdb4ee-bc2e-4e1f-99c3-bbd74ecbc057.png">
+
+```matlab
+plot(fshift(1:end-1),fftshift(abs(fft(sig_filtred))));
+% sound(sig_filtred,fs);
+title('le spectre du signal filtré ');
+```
+
+<img width="388" alt="lk" src="https://user-images.githubusercontent.com/93081417/215322001-702484c1-cbd2-4fb5-be8e-41471182282e.png">
+
+##### ~Pour K = 10:
+
+<img width="374" alt="k" src="https://user-images.githubusercontent.com/93081417/215322126-1dab3ba5-d75b-4e31-83dc-42c7f80cd7a2.png">
+
+<img width="388" alt="l" src="https://user-images.githubusercontent.com/93081417/215322148-a61b3e3d-ebb7-44cf-b645-4dd69427d45d.png">
+
+
+#### ==>Explication:
+  Plus le paramètre K est élevé, plus l'amplitude des fréquences autour de la fréquence de coupure sera élevée.
+
+#### **Améliorer la qualité de filtrage en augmentant l’ordre du filtre**
+
+```matlab
+k = 10;
+fc = 4500;
+%la transmitance complexe 
+h = k./(1+1j*(f/fc).^100); //Order=100
+
+h_filter = [h(1:floor(N/2)), flip(h(1:floor(N/2)))];
+y_filtr = spectre_music(1:end-1).*h_filter;
+sig_filtred= ifft(y_filtr,"symmetric");
+semilogx(f(1:floor(N/2)),abs( h(1:floor(N/2))),'linewidth',1.5)
+title('le gain ');
+```
+<img width="364" alt="s" src="https://user-images.githubusercontent.com/93081417/215322371-7c932a0c-99a5-4cb6-81b2-9e1c8f583b68.png">
+
+<img width="371" alt="Capture d’écran 2023-01-29 121502" src="https://user-images.githubusercontent.com/93081417/215322410-0cd133e8-e59d-4a22-8142-d92128b53ce9.png">
+
+
+$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
+***
+
+## Réalisé par : SAHEL Bouchra
+## Filiére : Robotique et Cobotique .
+## Encadré par : Pr. Ammour Alae .
 
 
 
