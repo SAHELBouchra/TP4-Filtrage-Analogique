@@ -118,7 +118,7 @@ semilogx(f,G1 , 'g',f,G2,'r' , f,G3, 'b')
 
 Obeservation:
 
-==> Plus la pulsation de coupure est petite, plus le filtre est passe haut et la transmittance sera plus élevée pour les fréquences élevées.
+  Plus la pulsation de coupure est petite, plus le filtre est passe haut et la transmittance sera plus élevée pour les fréquences élevées.
 
 #### **Choisissez wc qui vous semble optimal. Le filtre est-il bien choisi ? Pourquoi ?**
  
