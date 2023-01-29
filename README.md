@@ -135,7 +135,7 @@ plot(fshift,fftshift(abs(yyt1)/N)*2
 
 #### **Observez le signal y(t) obtenu, puis Comparer-le avec le signal que vous auriez souhaité obtenir. Conclusions ?**
 
-    ==>Un filtre passe-haut ne peut pas supprimer complètement toutes les informations indésirables car il ne peut sélectionner qu'une plage de fréquences           élevées.
+Un filtre passe-haut ne peut pas supprimer complètement toutes les informations indésirables car il ne peut sélectionner qu'une plage de fréquences élevées.
         
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
